@@ -25,6 +25,8 @@
 
 // Poco includes
 #include "Poco/UnicodeConverter.h"
+#include "Poco/File.h"
+#include "Poco/Path.h"
 
 // Magic includes
 #include "magic.h"
@@ -74,7 +76,15 @@ extern "C"
     {
         magicHandle = magic_open(MAGIC_NONE);
         
-        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + "/" + name() + "/magic.mgc";
+        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + name() + Poco::Path::separator() + "magic.mgc";
+
+        Poco::File magicFile = Poco::File(path);
+        if (magicFile.exists() == false) {
+            std::wstringstream msg;
+            msg << L"FileTypeSigModule: Magic file not found";
+            LOGERROR(msg.str());
+            return TskModule::FAIL;
+        }
 
         if (magic_load(magicHandle, path.c_str())) {
             std::wstringstream msg;

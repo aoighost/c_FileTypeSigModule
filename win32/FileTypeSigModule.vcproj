@@ -88,7 +88,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(OutDir)\$(InputName)&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\file-5.08\magic\magic.mgc&quot; &quot;$(OutDir)\$(InputName)\&quot;"
+				CommandLine="copy &quot;$(ProjectDir)..\file-5.08\libmagic-1.dll&quot; &quot;$(OutDir)\&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\mingw-libgnurx-2.5.1\libgnurx-0.dll&quot; &quot;$(OutDir)\.&quot;&#x0D;&#x0A;mkdir &quot;$(OutDir)\$(InputName)&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\file-5.08\magic\magic.mgc&quot; &quot;$(OutDir)\$(InputName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 		<Configuration
@@ -166,7 +166,7 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
-				CommandLine="mkdir &quot;$(OutDir)\$(InputName)&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\file-5.08\magic\magic.mgc&quot; &quot;$(OutDir)\$(InputName)\&quot;"
+				CommandLine="copy &quot;$(ProjectDir)..\file-5.08\libmagic-1.dll&quot; &quot;$(OutDir)\&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\mingw-libgnurx-2.5.1\libgnurx-0.dll&quot; &quot;$(OutDir)\.&quot;&#x0D;&#x0A;mkdir &quot;$(OutDir)\$(InputName)&quot;&#x0D;&#x0A;copy &quot;$(ProjectDir)..\file-5.08\magic\magic.mgc&quot; &quot;$(OutDir)\$(InputName)\&quot;&#x0D;&#x0A;"
 			/>
 		</Configuration>
 	</Configurations>

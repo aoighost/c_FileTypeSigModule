@@ -143,7 +143,7 @@ extern "C"
         catch (TskException& tskEx)
         {
             std::wstringstream msg;
-            msg << L"FileTypeModule - Caught framework exception: " << tskEx.what();
+            msg << L"FileTypeModule - Caught framework exception: " << TskUtilities::toUTF16(tskEx.message());
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }

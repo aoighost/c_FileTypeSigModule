@@ -117,7 +117,6 @@ extern "C"
         try
         {
             char buffer[FILE_BUFFER_SIZE];
-            char *type;
 
             //Do that magic magic
             ssize_t readLen = pFile->read(buffer, FILE_BUFFER_SIZE);
@@ -129,15 +128,22 @@ extern "C"
                 return TskModule::FAIL;
             }
 
-            if (!(type = const_cast<char *>(magic_buffer(magicHandle, buffer, readLen))) && !magic_error(magicHandle)) {
+            const char *type = magic_buffer(magicHandle, buffer, readLen);
+            if (type == NULL) {
                 std::wstringstream msg;
                 msg << L"Error initializing file type module: " << magic_error(magicHandle);
                 LOGERROR(msg.str());
                 return TskModule::FAIL;
             }
 
+            // clean up type -- we've seen invalid UTF-8 data being returned
+            char cleanType[1024];
+            cleanType[1023] = '\0';
+            strncpy(cleanType, type, 1023);
+            TskUtilities::cleanUTF8(cleanType);
+
             // Add to blackboard
-            TskBlackboardAttribute attr(TSK_FILE_TYPE_SIG, name(), "", type);
+            TskBlackboardAttribute attr(TSK_FILE_TYPE_SIG, name(), "", cleanType);
             pFile->addGenInfoAttribute(attr);
         }
         catch (TskException& tskEx)

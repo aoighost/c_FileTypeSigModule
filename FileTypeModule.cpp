@@ -88,7 +88,7 @@ extern "C"
 
         if (magic_load(magicHandle, path.c_str())) {
             std::wstringstream msg;
-            msg << L"Error initializing file type module: " << magic_error(magicHandle) << GetSystemPropertyW(TskSystemProperties::MODULE_DIR);
+            msg << L"FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemPropertyW(TskSystemProperties::MODULE_DIR);
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }
@@ -107,7 +107,7 @@ extern "C"
     {
         if (pFile == NULL)
         {
-            LOGERROR(L"File type module passed NULL file pointer.");
+            LOGERROR("FileTypeSigModule: Passed NULL file pointer.");
             return TskModule::FAIL;
         }
 
@@ -122,16 +122,16 @@ extern "C"
             ssize_t readLen = pFile->read(buffer, FILE_BUFFER_SIZE);
             // we shouldn't get zero as a return value since we know the file is not 0 sized at this point
             if (readLen == 0) {
-                std::wstringstream msg;
-                msg << L"Error reading file contents";
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Error reading file contents";
                 LOGERROR(msg.str());
                 return TskModule::FAIL;
             }
 
             const char *type = magic_buffer(magicHandle, buffer, readLen);
             if (type == NULL) {
-                std::wstringstream msg;
-                msg << L"Error initializing file type module: " << magic_error(magicHandle);
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Error getting file type: " << magic_error(magicHandle);
                 LOGERROR(msg.str());
                 return TskModule::FAIL;
             }
@@ -148,15 +148,15 @@ extern "C"
         }
         catch (TskException& tskEx)
         {
-            std::wstringstream msg;
-            msg << L"FileTypeModule - Caught framework exception: " << TskUtilities::toUTF16(tskEx.message());
+            std::stringstream msg;
+            msg << "FileTypeModule: Caught framework exception: " << tskEx.message();
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }
         catch (std::exception& ex)
         {
-            std::wstringstream msg;
-            msg << L"FileTypeModule - Caught exception: " << ex.what();
+            std::stringstream msg;
+            msg << "FileTypeModule: Caught exception: " << ex.what();
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }

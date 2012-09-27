@@ -64,7 +64,7 @@ extern "C"
      */
     TSK_MODULE_EXPORT const char *version()
     {
-        return "0.0.0";
+        return "1.0.0";
     }
 
     /**

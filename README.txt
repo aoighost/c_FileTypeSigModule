@@ -12,6 +12,13 @@ This module is a file analysis module that examines the file content
 to determine its type (i.e. PDF, JPEG).  It does this based on file
 signatures in libmagic.
 
+DEPLOYMENT REQUIREMENTS
+
+This module has the following deployment requirements:
+
+1. libmagic-1.dll must be in the same folder as the module.
+2. The magic file "magic.mgc" must be in a folder named
+   "FileTypeSigModule" in your modules folder.
 
 USAGE
 

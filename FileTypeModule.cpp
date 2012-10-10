@@ -121,7 +121,7 @@ extern "C"
             //Do that magic magic
             ssize_t readLen = pFile->read(buffer, FILE_BUFFER_SIZE);
             // we shouldn't get zero as a return value since we know the file is not 0 sized at this point
-            if (readLen == 0) {
+            if (readLen <= 0) {
                 std::stringstream msg;
                 msg << "FileTypeSigModule: Error reading file contents";
                 LOGERROR(msg.str());

@@ -16,9 +16,6 @@
 
 // System includes
 #include <string>
-#ifdef TSK_WIN32
-#include <windows.h>
-#endif
 #include <sstream>
 #include <stdlib.h>
 #include <string.h>

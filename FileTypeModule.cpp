@@ -16,9 +16,9 @@
 
 // System includes
 #include <string>
-#include <windows.h>
 #include <sstream>
 #include <stdlib.h>
+#include <string.h>
 
 // Framework includes
 #include "TskModuleDev.h"
@@ -31,9 +31,16 @@
 // Magic includes
 #include "magic.h"
 
-static const uint32_t FILE_BUFFER_SIZE = 1024;
+namespace 
+{
+    const char *MODULE_NAME = "FileTypeSigModule";
+    const char *MODULE_DESCRIPTION = "Determines file type based on signature using libmagic";
+    const char *MODULE_VERSION = "1.0.0";
 
-static magic_t magicHandle = NULL;
+  static const uint32_t FILE_BUFFER_SIZE = 1024;
+
+  static magic_t magicHandle = NULL;
+}
 
 extern "C" 
 {
@@ -42,9 +49,9 @@ extern "C"
      *
      * @return The name of the module.
      */
-    TSK_MODULE_EXPORT const char *name()
+    TSK_MODULE_EXPORT const char *name() 
     {
-        return "FileTypeSigModule";
+        return MODULE_NAME;
     }
 
     /**
@@ -54,7 +61,7 @@ extern "C"
      */
     TSK_MODULE_EXPORT const char *description()
     {
-        return "Determines file type based on signature using libmagic";
+        return MODULE_DESCRIPTION;
     }
 
     /**
@@ -64,7 +71,7 @@ extern "C"
      */
     TSK_MODULE_EXPORT const char *version()
     {
-        return "1.0.0";
+        return MODULE_VERSION;
     }
 
     /**
@@ -76,19 +83,19 @@ extern "C"
     {
         magicHandle = magic_open(MAGIC_NONE);
         
-        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + name() + Poco::Path::separator() + "magic.mgc";
+        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
 
         Poco::File magicFile = Poco::File(path);
         if (magicFile.exists() == false) {
-            std::wstringstream msg;
-            msg << L"FileTypeSigModule: Magic file not found";
+            std::stringstream msg;
+            msg << "FileTypeSigModule: Magic file not found: " << path;
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }
 
         if (magic_load(magicHandle, path.c_str())) {
-            std::wstringstream msg;
-            msg << L"FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemPropertyW(TskSystemProperties::MODULE_DIR);
+            std::stringstream msg;
+            msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_DIR);
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }
@@ -143,7 +150,7 @@ extern "C"
             TskUtilities::cleanUTF8(cleanType);
 
             // Add to blackboard
-            TskBlackboardAttribute attr(TSK_FILE_TYPE_SIG, name(), "", cleanType);
+            TskBlackboardAttribute attr(TSK_FILE_TYPE_SIG, MODULE_NAME, "", cleanType);
             pFile->addGenInfoAttribute(attr);
         }
         catch (TskException& tskEx)

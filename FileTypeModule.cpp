@@ -130,7 +130,7 @@ extern "C"
             // we shouldn't get zero as a return value since we know the file is not 0 sized at this point
             if (readLen <= 0) {
                 std::stringstream msg;
-                msg << "FileTypeSigModule: Error reading file contents";
+                msg << "FileTypeSigModule: Error reading file contents for file " << pFile->getId();
                 LOGERROR(msg.str());
                 return TskModule::FAIL;
             }

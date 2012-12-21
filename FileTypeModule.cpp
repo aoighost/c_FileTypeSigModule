@@ -82,24 +82,59 @@ extern "C"
     TskModule::Status TSK_MODULE_EXPORT initialize(const char* arguments)
     {
         magicHandle = magic_open(MAGIC_NONE);
-        
-        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
-
-        Poco::File magicFile = Poco::File(path);
-        if (magicFile.exists() == false) {
-            std::stringstream msg;
-            msg << "FileTypeSigModule: Magic file not found: " << path;
-            LOGERROR(msg.str());
+        if (magicHandle == NULL) {
+            LOGERROR("FileTypeSigModule: Error allocating magic cookie.");
             return TskModule::FAIL;
         }
 
-        if (magic_load(magicHandle, path.c_str())) {
-            std::stringstream msg;
-            msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_DIR);
-            LOGERROR(msg.str());
-            return TskModule::FAIL;
-        }
+#ifdef TSK_WIN32
+            //Don't bother trying magic_load() for defaults on win32 because it will always cause an exception instead of gracefully returning.
+            std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
 
+            Poco::File magicFile = Poco::File(path);
+            if (magicFile.exists() == false) {
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Magic file not found: " << path;
+                LOGERROR(msg.str());
+                return TskModule::FAIL;
+            }
+
+            if (magic_load(magicHandle, path.c_str())) {
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_DIR);
+                LOGERROR(msg.str());
+                return TskModule::FAIL;
+            }
+#else
+        /* Load the default magic database, which is found in this order:
+               1. MAGIC env variable
+               2. $HOME/.magic.mgc (or $HOME/.magic dir)
+               3. /usr/share/misc/magic.mgc (or /usr/share/misc/magic dir) (unless libmagic was build configured abnormally)
+        */
+        if (magic_load(magicHandle, NULL)) {
+            std::stringstream msg;
+            msg << "FileTypeSigModule: Error loading default magic file: " << magic_error(magicHandle);
+            LOGERROR(msg.str());
+
+            //Error with default, so load the magic database file in the repo
+            std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
+
+            Poco::File magicFile = Poco::File(path);
+            if (magicFile.exists() == false) {
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Magic file not found: " << path;
+                LOGERROR(msg.str());
+                return TskModule::FAIL;
+            }
+
+            if (magic_load(magicHandle, path.c_str())) {
+                std::stringstream msg;
+                msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_DIR);
+                LOGERROR(msg.str());
+                return TskModule::FAIL;
+            }
+        }
+#endif
         return TskModule::OK;
     }
 
@@ -173,6 +208,9 @@ extern "C"
 
     TskModule::Status TSK_MODULE_EXPORT finalize()
     {
+        if (magicHandle != NULL) {
+            magic_close(magicHandle);
+        }
         return TskModule::OK;
     }
 }

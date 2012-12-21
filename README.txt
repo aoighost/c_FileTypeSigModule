@@ -1,7 +1,6 @@
 File Type Detection Based on Signature Module
 Sleuth Kit Framework C++ Module
-July 2012
-
+July 2012. Updated Dec 2012.
 
 This module is for the C++ Sleuth Kit Framework.
 
@@ -14,11 +13,25 @@ signatures in libmagic.
 
 DEPLOYMENT REQUIREMENTS
 
-This module has the following deployment requirements:
+This module has the following deployment requirements for each platform.
+
+Linux:
+
+1. libmagic1
+2. libmagic-dev
+
+Install libmagic1 and libmagic-dev packages, or download the source from one of these places:
+    ftp://ftp.astron.com/pub/file/
+    https://github.com/glensc/file
+If downloaded from the FTP site, the source archive name will be something like "file-5.11.tar.gz".
+
+Win32:
 
 1. libmagic-1.dll must be in the same folder as the module.
 2. The magic file "magic.mgc" must be in a folder named
    "FileTypeSigModule" in your modules folder.
+
+See also "README_BuildingLibMagicWin32.txt".
 
 USAGE
 

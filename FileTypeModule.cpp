@@ -82,7 +82,29 @@ extern "C"
     TskModule::Status TSK_MODULE_EXPORT initialize(const char* arguments)
     {
         magicHandle = magic_open(MAGIC_NONE);
-        
+        if (magicHandle == NULL) {
+            LOGERROR("FileTypeSigModule: Error allocating magic cookie.");
+            return TskModule::FAIL;
+        }
+
+//Attempt to load magic database from default places on Linux.
+//Don't bother trying magic_load() for defaults on win32 because it will always cause an exception instead of gracefully returning.
+#ifndef TSK_WIN32
+        /* Load the default magic database, which is found in this order:
+               1. MAGIC env variable
+               2. $HOME/.magic.mgc (or $HOME/.magic dir)
+               3. /usr/share/misc/magic.mgc (or /usr/share/misc/magic dir) (unless libmagic was build configured abnormally)
+        */
+        if (magic_load(magicHandle, NULL)) {
+            std::stringstream msg;
+            msg << "FileTypeSigModule: Error loading default magic file: " << magic_error(magicHandle);
+            LOGERROR(msg.str());
+            //don't return, just fall through to the default loading below
+        } else {
+            return TskModule::OK;
+        }
+#endif
+        //Load the magic database file in the repo
         std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
 
         Poco::File magicFile = Poco::File(path);
@@ -173,6 +195,9 @@ extern "C"
 
     TskModule::Status TSK_MODULE_EXPORT finalize()
     {
+        if (magicHandle != NULL) {
+            magic_close(magicHandle);
+        }
         return TskModule::OK;
     }
 }

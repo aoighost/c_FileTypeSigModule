@@ -21,7 +21,7 @@
 #include <string.h>
 
 // Framework includes
-#include "TskModuleDev.h"
+#include "tsk/framework/utilities/TskModuleDev.h"
 
 // Poco includes
 #include "Poco/UnicodeConverter.h"

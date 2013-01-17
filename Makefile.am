@@ -6,9 +6,13 @@ lib_LTLIBRARIES = libtskFileTypeSigModule.la
 libtskFileTypeSigModule_la_SOURCES = FileTypeModule.cpp
 libtskFileTypeSigModule_la_LIBADD = $(FW_LIBS)
 
-nobase_dist_data_DATA = tsk/FileTypeSigModule/*
+nobase_dist_data_DATA = tsk/FileTypeSigModule/magic.mgc
 
-bin_PROGRAMS = maybe_copy_configs
+bin_PROGRAMS = maybe_copy_configs setup_data
+
+setup_data:
+	-mkdir -p tsk/FileTypeSigModule
+	(cd tsk/FileTypeSigModule; ln -sf ../../file-5.08/magic/magic.mgc .)
 
 MODULE_CONFIG_DIR = $(RUNTIME_MODULES_CONFIG_DIR)/FileTypeSigModule
 

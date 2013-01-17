@@ -105,7 +105,7 @@ extern "C"
         }
 #endif
         //Load the magic database file in the repo
-        std::string path = GetSystemProperty(TskSystemProperties::MODULE_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
+        std::string path = GetSystemProperty(TskSystemProperties::MODULE_CONFIG_DIR) + Poco::Path::separator() + MODULE_NAME + Poco::Path::separator() + "magic.mgc";
 
         Poco::File magicFile = Poco::File(path);
         if (magicFile.exists() == false) {
@@ -117,7 +117,7 @@ extern "C"
 
         if (magic_load(magicHandle, path.c_str())) {
             std::stringstream msg;
-            msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_DIR);
+            msg << "FileTypeSigModule: Error loading magic file: " << magic_error(magicHandle) << GetSystemProperty(TskSystemProperties::MODULE_CONFIG_DIR);
             LOGERROR(msg.str());
             return TskModule::FAIL;
         }

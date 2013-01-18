@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>libtskframework.lib;libmagic-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(TSK_HOME)\framework\win32\framework\$(Configuration);$(POCO_HOME)\lib;$(ProjectDir)\..\file-5.08;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TSK_HOME)\framework\msvcpp\framework\$(Configuration);$(POCO_HOME)\lib;$(ProjectDir)\..\file-5.08;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -87,7 +87,7 @@ copy "$(ProjectDir)..\file-5.08\magic\magic.mgc" "$(OutDir)$(ProjectName)\"
     </ClCompile>
     <Link>
       <AdditionalDependencies>libtskframework.lib;libmagic-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(TSK_HOME)\framework\win32\framework\$(Configuration);$(POCO_HOME)\lib;$(ProjectDir)\..\file-5.08;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(TSK_HOME)\framework\msvcpp\framework\$(Configuration);$(POCO_HOME)\lib;$(ProjectDir)\..\file-5.08;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

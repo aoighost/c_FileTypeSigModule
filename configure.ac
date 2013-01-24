@@ -43,8 +43,30 @@ AC_FUNC_MALLOC
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([memset strtoul strtoull])
 
+# Check for libmagic
+AC_CHECK_HEADERS([magic.h],
+  [AC_CHECK_LIB([magic], [magic_open], 
+     [with_magic=yes],
+     [AC_MSG_WARN([Found magic headers, but could not link to libmagic library.])],
+  )],
+  [AC_MSG_WARN([Cound not find magic headers.])]
+)
+AM_CONDITIONAL([HAS_LIBMAGIC], [test "x$with_magic" = "xyes"])
+
+if test "x$with_magic" = "xyes"; then
+
+# RUNTIME_MODULES_CONFIG_DIR
+AC_SUBST(RUNTIME_MODULES_CONFIG_DIR, "../../runtime/modules_config")
+
+# MODULES_ROOT_DIR is the tsk/framework/modules directory
+# MODULES_ROOT_DIR is relative to RUNTIME_MODULES_CONFIG_DIR/<module_name>
+# so that each module can do the following to populate config files to the runtime directory.
+#   mkdir -p $(RUNTIME_MODULES_CONFIG_DIR)/<module_name>
+#   (cd $(RUNTIME_MODULES_CONFIG_DIR)/<module_name>; ln -s $(MODULES_ROOT_DIR)/c_foobarModule/foobar_config.xml .)
+AC_SUBST(MODULES_ROOT_DIR, "../../../modules")
+
 # Check if the module is under tsk/framework/modules
-if test -f ../modules/Makefile.am; then
+if test -f ../../modules/Makefile.am; then
    AC_SUBST(FW_LIBS, "../../tsk/framework/libtskframework.la ../../../tsk/libtsk.la")
    AC_SUBST(TSK_INCLUDE, "-I../../..")
    AC_SUBST(FW_INCLUDE,  "-I../..")
@@ -59,6 +81,12 @@ else
    AC_CHECK_LIB([tskframework],[main],[],AC_MSG_ERROR([tskframework library not found.]))
 fi
 
+else
+# action if libmagic is not found
+AC_MSG_WARN([libmagic library not found. FileTypeSigModule will not be built.])
+fi
+
 AC_CONFIG_FILES([Makefile])
 
 AC_OUTPUT
+
